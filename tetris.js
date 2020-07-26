@@ -66,7 +66,7 @@ var tetrimino = [
 ];
 
 var now_x = 5;
-var now_y = 0;
+var now_y = -3;
 var cnt = 0;
 var now = Math.floor(Math.random() * 6);
 var hesi = false; //猶予
@@ -111,6 +111,8 @@ function draw() {
 					ctx.fillStyle = "#92CB97";
 				}
 
+				if (now_y + h < 0) continue;
+
 				ctx.fillRect(
 					500 + (now_x + w) * 30 + 2,
 					(now_y + h) * 30 + 2,
@@ -131,7 +133,7 @@ function draw() {
 		hesi = false;
 		stick();
 		now_x = 5;
-		now_y = 0;
+		now_y = -3;
 		now = Math.floor(Math.random() * 6);
 	}
 
@@ -155,6 +157,7 @@ function draw() {
 
 function collision(next_x, next_y) {
 	var ok = false;
+	if (now_y < 0) return false;
 	for (var h = 0; h < 4; h++) {
 		for (var w = 0; w < 4; w++) {
 			if (h + next_y >= 22 || w + now_x > 12) {
@@ -242,32 +245,28 @@ document.addEventListener("keydown", (event) => {
 	} else if (keyName == "ArrowDown") {
 		if (!collision(now_x, now_y + 1) && hesi == false) now_y++;
 	} else if (keyName == "ArrowUp") {
-		var t = [
-			[0, 0, 0, 0],
-			[0, 0, 0, 0],
-			[0, 0, 0, 0],
-			[0, 0, 0, 0],
-		];
-		for (var w = 0; w < 4; w++) {
-			for (var h = 0; h < 4; h++) {
-				t[h][w] = tetrimino[now][w][-h + 3];
+		if (hesi == false) {
+			var t = [
+				[0, 0, 0, 0],
+				[0, 0, 0, 0],
+				[0, 0, 0, 0],
+				[0, 0, 0, 0],
+			];
+			for (var w = 0; w < 4; w++) {
+				for (var h = 0; h < 4; h++) {
+					t[h][w] = tetrimino[now][w][-h + 3];
+				}
 			}
-		}
-		for (var w = 0; w < 4; w++) {
-			for (var h = 0; h < 4; h++) {
-				tetrimino[now][h][w] = t[h][w];
+			for (var w = 0; w < 4; w++) {
+				for (var h = 0; h < 4; h++) {
+					tetrimino[now][h][w] = t[h][w];
+				}
 			}
-		}
-		if (now_x >= 6) {
-			while (collision(now_x, now_y + 1)) now_x--;
-		} else {
-			while (collision(now_x, now_y + 1)) now_x++;
-		}
-		if (hesi) {
-			while (collision(now_x, now_y + 1)) {
-				now_y--;
+			if (now_x >= 6) {
+				while (collision(now_x, now_y + 1)) now_x--;
+			} else {
+				while (collision(now_x, now_y + 1)) now_x++;
 			}
-			now_y++;
 		}
 	}
 });
