@@ -1,13 +1,9 @@
-var back_w = 300,
-	back_h = 550;
+// var back_w = 300,
+// 	back_h = 550;
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-for (var h = 0; h < 22; h++) {
-	for (var w = 0; w < 12; w++) {
-		ctx.strokeStyle = "#cccccc";
-		ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
-	}
-}
+ctx.strokeStyle = "#cccccc";
 var block = [
 	[9, 9, 9, 0, 0, 0, 0, 0, 0, 9, 9, 9],
 	[9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
@@ -32,12 +28,6 @@ var block = [
 	[9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
 	[9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
 ];
-for (var h = 0; h < 22; h++) {
-	for (var w = 0; w < 12; w++) {
-		if (block[h][w] == 0) continue;
-		else ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
-	}
-}
 
 var tetrimino = [
 	[
@@ -48,38 +38,38 @@ var tetrimino = [
 	],
 	[
 		[0, 0, 0, 0],
-		[0, 0, 2, 0],
-		[0, 2, 2, 0],
-		[0, 2, 0, 0],
+		[0, 0, 1, 0],
+		[0, 1, 1, 0],
+		[0, 1, 0, 0],
 	],
 	[
 		[0, 0, 0, 0],
-		[0, 3, 0, 0],
-		[0, 3, 3, 0],
-		[0, 0, 3, 0],
+		[0, 1, 0, 0],
+		[0, 1, 1, 0],
+		[0, 0, 1, 0],
 	],
 	[
 		[0, 0, 0, 0],
-		[0, 4, 4, 0],
-		[0, 4, 0, 0],
-		[0, 4, 0, 0],
+		[0, 1, 1, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0],
 	],
 	[
 		[0, 0, 0, 0],
-		[0, 5, 5, 0],
-		[0, 0, 5, 0],
-		[0, 0, 5, 0],
+		[0, 1, 1, 0],
+		[0, 0, 1, 0],
+		[0, 0, 1, 0],
 	],
 	[
-		[0, 6, 0, 0],
-		[0, 6, 0, 0],
-		[0, 6, 0, 0],
-		[0, 6, 0, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0],
 	],
 ];
 
 let x = 0;
-var now_x = 0;
+var now_x = 5;
 var now_y = 0;
 var cnt = 0;
 var now = Math.floor(Math.random() * 6);
@@ -103,7 +93,7 @@ function draw() {
 			if (tetrimino[now][h][w] == 0) continue;
 			else
 				ctx.fillRect(
-					500 + (now_x + w + 5) * 30 + 2,
+					500 + (now_x + w) * 30 + 2,
 					(now_y + h) * 30 + 2,
 					26,
 					26
@@ -111,12 +101,12 @@ function draw() {
 		}
 	}
 	cnt++;
-	if (cnt % 10 == 0) {
+	if (cnt % 30 == 0) {
 		now_y++;
 	}
+	collision();
 	if (now_y >= 18) {
-		stick();
-		now_x = 0;
+		now_x = 5;
 		now_y = 0;
 		now = Math.floor(Math.random() * 6);
 	}
@@ -128,19 +118,69 @@ function draw() {
  */
 
 function stick() {
-	for (var h = now_y; h < now_y + 4; h++) {
-		for (var w = now_x; w < now_x + 4; w++) {
-			if (block[h][w] == 0)
-				block[h][w + 5] = tetrimino[now][w - now_x][h - now_y];
+	for (var h = 0; h < 4; h++) {
+		for (var w = 0; w < 4; w++) {
+			if (block[h + now_y][w + now_x] == 0) {
+				if (h + now_y >= 22 || w + now_x >= 12) continue;
+				block[h + now_y][w + now_x] = tetrimino[now][h][w];
+			}
 		}
 	}
+	check();
 }
 
 /**
  *  衝突判定
  */
 
+function collision() {
+	var ok = false;
+	for (var h = 0; h < 4; h++) {
+		for (var w = 0; w < 4; w++) {
+			if (block[h + now_y][w + now_x] == 1 && tetrimino[now][h][w] == 1) {
+				ok = true;
+			}
+		}
+	}
+	if (ok) {
+		now_y--;
+		stick();
+	}
+}
+
 /**
  *  一列揃ったかをチェック
  */
+
+function check() {
+	for (var h = 0; h < 4; h++) {
+		var ok = true;
+		for (var w = 1; w < 12; w++) {
+			if (block[h][w] == 0) {
+				ok = false;
+			}
+		}
+		if (ok) {
+			for (var w = 1; w < 12; w++) {
+				block[h][w] == 0;
+			}
+		}
+	}
+}
+
+/**
+ * キー操作
+ */
+document.addEventListener("keydown", (event) => {
+	var keyName = event.key;
+	console.log(keyName);
+
+	if (keyName == "ArrowRight") {
+		if (now_x < 12) now_x++;
+	} else if (keyName == "ArrowLeft") {
+		if (now_x >= 1) now_x--;
+	} else if (keyName == "ArrowDown") {
+		if (now_y < 22) now_y++;
+	}
+});
 draw();
