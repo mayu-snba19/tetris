@@ -1,6 +1,3 @@
-// var back_w = 300,
-// 	back_h = 550;
-
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 ctx.strokeStyle = "#cccccc";
@@ -72,47 +69,83 @@ var now_x = 5;
 var now_y = 0;
 var cnt = 0;
 var now = Math.floor(Math.random() * 6);
+var hesi = false; //猶予
 
 /**
  * ループ
  */
+
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height); //canvasの初期化
 
+	//枠線の描画
 	for (var h = 0; h < 22; h++) {
 		for (var w = 0; w < 12; w++) {
 			ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
-			if (block[h][w] == 9 || block[h][w] == 1) {
+			if (block[h][w] == 9) {
+				ctx.fillStyle = "#000000";
+				ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+			} else if (block[h][w] == 1) {
+				ctx.fillStyle = "#aaaaaa";
 				ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
 			}
 		}
 	}
 
+	//落ちてくるブロックの描画
 	for (var h = 0; h < 4; h++) {
 		for (var w = 0; w < 4; w++) {
 			if (tetrimino[now][h][w] == 0) continue;
-			else
+			else {
+				if (now == 0) {
+					ctx.fillStyle = "#F9E900";
+				} else if (now == 1) {
+					ctx.fillStyle = "#E84566";
+				} else if (now == 2) {
+					ctx.fillStyle = "#F5A500";
+				} else if (now == 3) {
+					ctx.fillStyle = "#F3ADCB";
+				} else if (now == 4) {
+					ctx.fillStyle = "#ACDDF7";
+				} else if (now == 5) {
+					ctx.fillStyle = "#92CB97";
+				}
+
 				ctx.fillRect(
 					500 + (now_x + w) * 30 + 2,
 					(now_y + h) * 30 + 2,
 					26,
 					26
 				);
+			}
 		}
 	}
 
-	cnt++;
-	if (cnt % 30 == 0) {
-		now_y++;
+	//猶予時間中で、衝突が無くなったら
+	if (hesi == true && collision(now_x, now_y + 1) == false) {
+		hesi = false;
 	}
 
-	if (collision(now_x, now_y + 1) == true) {
+	//猶予時間中で、秒数がたったら
+	if (hesi == true && cnt >= 60) {
+		hesi = false;
 		stick();
 		now_x = 5;
 		now_y = 0;
 		now = Math.floor(Math.random() * 6);
 	}
 
+	//猶予時間じゃなくて
+	if (cnt % 30 == 0 && hesi == false) {
+		now_y++;
+	}
+
+	//衝突する かつ
+	if (collision(now_x, now_y + 1) == true && hesi == false) {
+		hesi = true;
+		cnt = 0;
+	}
+	cnt++;
 	window.requestAnimationFrame(draw);
 }
 
@@ -136,9 +169,9 @@ function collision(next_x, next_y) {
 		}
 	}
 	if (ok) {
-		return true;
+		return true; //ぶつかる
 	}
-	return false;
+	return false; //ぶつからない
 }
 
 /**
@@ -146,9 +179,9 @@ function collision(next_x, next_y) {
  */
 
 function stick() {
+	console.log("stick");
 	for (var h = 0; h < 4; h++) {
 		for (var w = 0; w < 4; w++) {
-			if (w + now_x >= 11 || w + now_x <= 0) continue;
 			if (block[h + now_y][w + now_x] == 0) {
 				block[h + now_y][w + now_x] = tetrimino[now][h][w];
 			}
@@ -157,6 +190,7 @@ function stick() {
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height); //canvasの初期化
 
+	//描画しておく
 	for (var h = 0; h < 22; h++) {
 		for (var w = 0; w < 12; w++) {
 			ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
@@ -174,6 +208,7 @@ function stick() {
  */
 
 function check() {
+	console.log("check");
 	for (var h = now_y + 3; h >= now_y; h--) {
 		console.log("Yes");
 		var ok = true;
@@ -183,7 +218,7 @@ function check() {
 			}
 		}
 		if (ok) {
-			for (var v = h - 1; v >= 1; v--) {
+			for (var v = h - 1; v > 0; v--) {
 				for (var w = 1; w < 11; w++) {
 					block[v + 1][w] = block[v][w];
 				}
@@ -205,7 +240,7 @@ document.addEventListener("keydown", (event) => {
 	} else if (keyName == "ArrowLeft") {
 		if (!collision(now_x - 1, now_y)) now_x--;
 	} else if (keyName == "ArrowDown") {
-		if (!collision(now_x, now_y + 1)) now_y++;
+		if (!collision(now_x, now_y + 1) && hesi == false) now_y++;
 	} else if (keyName == "ArrowUp") {
 		var t = [
 			[0, 0, 0, 0],
@@ -224,9 +259,15 @@ document.addEventListener("keydown", (event) => {
 			}
 		}
 		if (now_x >= 6) {
-			while (collision(now_x, now_y)) now_x--;
+			while (collision(now_x, now_y + 1)) now_x--;
 		} else {
-			while (collision(now_x, now_y)) now_x++;
+			while (collision(now_x, now_y + 1)) now_x++;
+		}
+		if (hesi) {
+			while (collision(now_x, now_y + 1)) {
+				now_y--;
+			}
+			now_y++;
 		}
 	}
 });
