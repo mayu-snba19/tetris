@@ -148,11 +148,24 @@ function collision(next_x, next_y) {
 function stick() {
 	for (var h = 0; h < 4; h++) {
 		for (var w = 0; w < 4; w++) {
+			if (w + now_x >= 11 || w + now_x <= 0) continue;
 			if (block[h + now_y][w + now_x] == 0) {
 				block[h + now_y][w + now_x] = tetrimino[now][h][w];
 			}
 		}
 	}
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height); //canvasの初期化
+
+	for (var h = 0; h < 22; h++) {
+		for (var w = 0; w < 12; w++) {
+			ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
+			if (block[h][w] == 9 || block[h][w] == 1) {
+				ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+			}
+		}
+	}
+
 	check();
 }
 
@@ -162,6 +175,7 @@ function stick() {
 
 function check() {
 	for (var h = now_y + 3; h >= now_y; h--) {
+		console.log("Yes");
 		var ok = true;
 		for (var w = 1; w < 11; w++) {
 			if (block[h][w] == 0 || block[h][w] == 9) {
@@ -169,8 +183,10 @@ function check() {
 			}
 		}
 		if (ok) {
-			for (var w = 1; w < 11; w++) {
-				block[h][w] = block[h - 1][w];
+			for (var v = h - 1; v >= 1; v--) {
+				for (var w = 1; w < 11; w++) {
+					block[v + 1][w] = block[v][w];
+				}
 			}
 			h++;
 		}
