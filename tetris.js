@@ -153,7 +153,7 @@ function stick() {
 			}
 		}
 	}
-	//check();
+	check();
 }
 
 /**
@@ -161,19 +161,18 @@ function stick() {
  */
 
 function check() {
-	for (var h = now_y; h < now_y + 4; h++) {
+	for (var h = now_y + 3; h >= now_y; h--) {
 		var ok = true;
-		for (var w = 1; w < 12; w++) {
-			if (block[h][w] == 0) {
+		for (var w = 1; w < 11; w++) {
+			if (block[h][w] == 0 || block[h][w] == 9) {
 				ok = false;
 			}
 		}
-	}
-	for (var h = now_y; h < now_y + 4; h++) {
 		if (ok) {
-			for (var w = 1; w < 12; w++) {
-				block[h][w] == 0;
+			for (var w = 1; w < 11; w++) {
+				block[h][w] = block[h - 1][w];
 			}
+			h++;
 		}
 	}
 }
