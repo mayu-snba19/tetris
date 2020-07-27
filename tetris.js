@@ -73,6 +73,8 @@ var now = Math.floor(Math.random() * 6);
 var hesi = false; //猶予
 var gameover = false;
 var score = 0;
+var flickCount = 0;
+var flickLoop;
 
 /**
  * ゲームオーバー画面
@@ -188,10 +190,9 @@ var intervalId = setInterval(loop, 20);
 
 function collision(next_x, next_y) {
 	var ok = false;
-	//if (next_y < 0) return false;
 	for (var h = 0; h < 4; h++) {
 		for (var w = 0; w < 4; w++) {
-			if (next_y + h < 0) continue;
+			if (next_y + h < 0 || next_y >= 22) continue;
 			if (tetrimino[now][h][w] == 0) continue;
 			if (block[h + next_y][w + next_x] != 0) ok = true;
 		}
@@ -219,11 +220,14 @@ function stick() {
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height); //canvasの初期化
 
-	//描画しておく
 	for (var h = 0; h < 22; h++) {
 		for (var w = 0; w < 12; w++) {
 			ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
-			if (block[h][w] == 9 || block[h][w] == 1) {
+			if (block[h][w] == 9) {
+				ctx.fillStyle = "#000000";
+				ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+			} else if (block[h][w] == 1) {
+				ctx.fillStyle = "#aaaaaa";
 				ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
 			}
 		}
@@ -238,6 +242,7 @@ function stick() {
 function check() {
 	var lineCount = 0;
 	console.log("check");
+	var erase = false;
 	for (var h = now_y + 3; h >= now_y; h--) {
 		console.log("Yes");
 		var ok = true;
@@ -247,6 +252,7 @@ function check() {
 			}
 		}
 		if (ok) {
+			erase = true;
 			lineCount++;
 			for (var v = h - 1; v > 0; v--) {
 				for (var w = 1; w < 11; w++) {
@@ -257,6 +263,52 @@ function check() {
 		}
 	}
 	score += lineCount * lineCount * 100;
+	if (score >= 99999) score = 99999;
+
+	if (erase) {
+		flickCount = 0;
+		flickLoop = setInterval(drawFlick, 100);
+		clearInterval(intervalId);
+	}
+}
+
+function drawFlick() {
+	if (flickCount % 3 == 1) {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for (var h = 0; h < 22; h++) {
+			for (var w = 0; w < 12; w++) {
+				ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
+				if (block[h][w] == 9) {
+					ctx.fillStyle = "#000000";
+					ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+				} else if (block[h][w] == 1) {
+					ctx.fillStyle = "#aaaaaa";
+					ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+				}
+			}
+		}
+	}
+	if (flickCount % 6 == 1) {
+		ctx.clearRect(0, 0, canvas.width, canvas.height); //canvasの初期化
+		for (var h = 0; h < 22; h++) {
+			for (var w = 0; w < 12; w++) {
+				ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
+				if (block[h][w] == 9) {
+					ctx.fillStyle = "#aaaaaa";
+					ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+				} else if (block[h][w] == 1) {
+					ctx.fillStyle = "#aaaaaa";
+					ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+				}
+			}
+		}
+	}
+	flickCount++;
+	console.log(flickCount);
+	if (flickCount >= 13) {
+		clearInterval(flickLoop);
+		intervalId = setInterval(loop, 20);
+	}
 }
 
 /**
