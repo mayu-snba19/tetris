@@ -38,39 +38,39 @@ var tetrimino = [
 	],
 	[
 		[0, 0, 0, 0],
-		[1, 1, 0, 0],
-		[0, 1, 1, 0],
+		[2, 2, 0, 0],
+		[0, 2, 2, 0],
 		[0, 0, 0, 0],
 	],
 	[
 		[0, 0, 0, 0],
-		[0, 1, 1, 0],
-		[1, 1, 0, 0],
+		[0, 3, 3, 0],
+		[3, 3, 0, 0],
 		[0, 0, 0, 0],
 	],
 	[
 		[0, 0, 0, 0],
-		[0, 0, 1, 0],
-		[1, 1, 1, 0],
+		[0, 0, 4, 0],
+		[4, 4, 4, 0],
 		[0, 0, 0, 0],
 	],
 	[
 		[0, 0, 0, 0],
-		[1, 0, 0, 0],
-		[1, 1, 1, 0],
+		[5, 0, 0, 0],
+		[5, 5, 5, 0],
 		[0, 0, 0, 0],
 	],
 	[
 		[0, 0, 0, 0],
 		[0, 0, 0, 0],
-		[1, 1, 1, 1],
+		[6, 6, 6, 6],
 		[0, 0, 0, 0],
 	],
 
 	[
 		[0, 0, 0, 0],
-		[0, 1, 0, 0],
-		[1, 1, 1, 0],
+		[0, 7, 0, 0],
+		[7, 7, 7, 0],
 		[0, 0, 0, 0],
 	],
 ];
@@ -86,7 +86,7 @@ function shuffle() {
 }
 
 var now_x = 5;
-var now_y = -3;
+var now_y = -2;
 var cnt = 0;
 var now = 0;
 var hesi = false; //猶予
@@ -141,19 +141,20 @@ function loop() {
 		for (var w = 0; w < 4; w++) {
 			if (tetrimino[now][h][w] == 0) continue;
 			else {
-				if (now == 0) {
+				var col = tetrimino[now][h][w];
+				if (col == 1) {
 					ctx.fillStyle = "#F9E900";
-				} else if (now == 1) {
+				} else if (col == 2) {
 					ctx.fillStyle = "#E84566";
-				} else if (now == 2) {
+				} else if (col == 3) {
 					ctx.fillStyle = "#F5A500";
-				} else if (now == 3) {
+				} else if (col == 4) {
 					ctx.fillStyle = "#F3ADCB";
-				} else if (now == 4) {
+				} else if (col == 5) {
 					ctx.fillStyle = "#ACDDF7";
-				} else if (now == 5) {
+				} else if (col == 6) {
 					ctx.fillStyle = "#92CB97";
-				} else if (now == 6) {
+				} else if (col == 7) {
 					ctx.fillStyle = "#F08A37";
 				}
 
@@ -179,7 +180,7 @@ function loop() {
 		hesi = false;
 		stick();
 		now_x = 5;
-		now_y = -3;
+		now_y = -2;
 		now++;
 		if (now >= 7) {
 			now = 0;
@@ -234,8 +235,8 @@ function collision(next_x, next_y) {
 function stick() {
 	for (var h = 0; h < 4; h++) {
 		for (var w = 0; w < 4; w++) {
-			if (block[h + now_y][w + now_x] == 0) {
-				block[h + now_y][w + now_x] = tetrimino[now][h][w];
+			if (block[h + now_y][w + now_x] == 0 && tetrimino[now][h][w] != 0) {
+				block[h + now_y][w + now_x] = 1;
 			}
 		}
 	}
@@ -248,7 +249,7 @@ function stick() {
 			if (block[h][w] == 9) {
 				ctx.fillStyle = "#000000";
 				ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
-			} else if (block[h][w] == 1) {
+			} else if (block[h][w] != 0) {
 				ctx.fillStyle = "#aaaaaa";
 				ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 			}
@@ -284,21 +285,23 @@ function check() {
 	}
 	if (erase) eraseCount++;
 	if (eraseCount >= 1) {
-		speed = 25;
+		speed = 27;
 	} else if (eraseCount >= 5) {
-		speed = 20;
+		speed = 24;
 	} else if (eraseCount >= 9) {
-		speed = 15;
+		speed = 20;
 	} else if (eraseCount >= 13) {
-		speed = 10;
+		speed = 17;
 	} else if (eraseCount >= 17) {
-		speed = 9;
+		speed = 15;
 	} else if (eraseCount >= 21) {
-		speed = 8;
+		speed = 13;
 	} else if (eraseCount >= 23) {
-		speed = 7;
+		speed = 11;
 	} else if (eraseCount >= 25) {
-		speed = 6;
+		speed = 9;
+	} else if (eraseCount >= 27) {
+		speed = 7;
 	}
 	score += lineCount * lineCount * 100;
 
@@ -318,7 +321,7 @@ function drawFlick() {
 				if (block[h][w] == 9) {
 					ctx.fillStyle = "#000000";
 					ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
-				} else if (block[h][w] == 1) {
+				} else if (block[h][w] != 0) {
 					ctx.fillStyle = "#aaaaaa";
 					ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 				}
@@ -333,7 +336,7 @@ function drawFlick() {
 				if (block[h][w] == 9) {
 					ctx.fillStyle = "#aaaaaa";
 					ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
-				} else if (block[h][w] == 1) {
+				} else if (block[h][w] != 0) {
 					ctx.fillStyle = "#aaaaaa";
 					ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 				}
