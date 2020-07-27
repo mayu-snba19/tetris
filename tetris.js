@@ -66,12 +66,19 @@ var tetrimino = [
 		[0, 1, 0, 0],
 		[0, 1, 0, 0],
 	],
+
+	[
+		[0, 1, 0, 0],
+		[0, 1, 1, 0],
+		[0, 1, 0, 0],
+		[0, 0, 0, 0],
+	],
 ];
 
 var now_x = 5;
 var now_y = -3;
 var cnt = 0;
-var now = Math.floor(Math.random() * 6);
+var now = Math.floor(Math.random() * 7);
 var hesi = false; //猶予
 var gameover = false;
 var score = 0;
@@ -79,6 +86,7 @@ var flickCount = 0;
 var flickLoop;
 var speed = 30;
 var pos = 50;
+var eraseCount = 0;
 /**
  * ゲームオーバー画面
  */
@@ -134,6 +142,8 @@ function loop() {
 					ctx.fillStyle = "#ACDDF7";
 				} else if (now == 5) {
 					ctx.fillStyle = "#92CB97";
+				} else if (now == 6) {
+					ctx.fillStyle = "#F08A37";
 				}
 
 				if (now_y + h < 0) continue;
@@ -159,7 +169,7 @@ function loop() {
 		stick();
 		now_x = 5;
 		now_y = -3;
-		now = Math.floor(Math.random() * 6);
+		now = Math.floor(Math.random() * 7);
 	}
 
 	if (collision(now_x, now_y + 1) == true && now_y < 0 && hesi == true) {
@@ -257,14 +267,25 @@ function check() {
 			h++;
 		}
 	}
+	if (erase) eraseCount++;
+	if (eraseCount >= 1) {
+		speed = 25;
+	} else if (eraseCount >= 5) {
+		speed = 20;
+	} else if (eraseCount >= 9) {
+		speed = 15;
+	} else if (eraseCount >= 13) {
+		speed = 10;
+	} else if (eraseCount >= 17) {
+		speed = 9;
+	} else if (eraseCount >= 21) {
+		speed = 8;
+	} else if (eraseCount >= 23) {
+		speed = 7;
+	} else if (eraseCount >= 25) {
+		speed = 6;
+	}
 	score += lineCount * lineCount * 100;
-	if (score >= 9999) score = 99999;
-	else if (score >= 1500) speed = 5;
-	else if (score >= 1000) speed = 8;
-	else if (score >= 1200) speed = 10;
-	else if (score >= 500) speed = 15;
-	else if (score >= 400) speed = 20;
-	else if (score >= 300) speed = 25;
 
 	if (erase) {
 		flickCount = 0;
