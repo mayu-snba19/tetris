@@ -38,47 +38,57 @@ var tetrimino = [
 	],
 	[
 		[0, 0, 0, 0],
-		[0, 0, 1, 0],
+		[1, 1, 0, 0],
 		[0, 1, 1, 0],
-		[0, 1, 0, 0],
+		[0, 0, 0, 0],
 	],
 	[
 		[0, 0, 0, 0],
-		[0, 1, 0, 0],
 		[0, 1, 1, 0],
-		[0, 0, 1, 0],
-	],
-	[
+		[1, 1, 0, 0],
 		[0, 0, 0, 0],
-		[0, 1, 0, 0],
-		[0, 1, 0, 0],
-		[0, 1, 1, 0],
 	],
 	[
 		[0, 0, 0, 0],
 		[0, 0, 1, 0],
-		[0, 0, 1, 0],
-		[0, 1, 1, 0],
+		[1, 1, 1, 0],
+		[0, 0, 0, 0],
 	],
 	[
-		[0, 1, 0, 0],
-		[0, 1, 0, 0],
-		[0, 1, 0, 0],
-		[0, 1, 0, 0],
+		[0, 0, 0, 0],
+		[1, 0, 0, 0],
+		[1, 1, 1, 0],
+		[0, 0, 0, 0],
+	],
+	[
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+		[1, 1, 1, 1],
+		[0, 0, 0, 0],
 	],
 
 	[
+		[0, 0, 0, 0],
 		[0, 1, 0, 0],
-		[0, 1, 1, 0],
-		[0, 1, 0, 0],
+		[1, 1, 1, 0],
 		[0, 0, 0, 0],
 	],
 ];
 
+function shuffle() {
+	var length = 7;
+	for (var i = length - 1; i > 0; i--) {
+		var j = Math.floor(Math.random() * (i + 1));
+		var tmp = tetrimino[i];
+		tetrimino[i] = tetrimino[j];
+		tetrimino[j] = tmp;
+	}
+}
+
 var now_x = 5;
 var now_y = -3;
 var cnt = 0;
-var now = Math.floor(Math.random() * 7);
+var now = 0;
 var hesi = false; //猶予
 var gameover = false;
 var score = 0;
@@ -87,6 +97,7 @@ var flickLoop;
 var speed = 30;
 var pos = 50;
 var eraseCount = 0;
+shuffle();
 /**
  * ゲームオーバー画面
  */
@@ -169,7 +180,11 @@ function loop() {
 		stick();
 		now_x = 5;
 		now_y = -3;
-		now = Math.floor(Math.random() * 7);
+		now++;
+		if (now >= 7) {
+			now = 0;
+			shuffle();
+		}
 	}
 
 	if (collision(now_x, now_y + 1) == true && now_y < 0 && hesi == true) {
