@@ -1,6 +1,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 ctx.strokeStyle = "#cccccc";
+
 var block = [
 	[9, 9, 9, 0, 0, 0, 0, 0, 0, 9, 9, 9],
 	[9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
@@ -156,8 +157,11 @@ function loop() {
 		now = Math.floor(Math.random() * 6);
 	}
 
-	if (collision(now_x, now_y + 1) == true && now_y < 1 && hesi == true)
+	if (collision(now_x, now_y + 1) == true && now_y < 0 && hesi == true) {
 		gameover = true;
+		console.log(now_x + " " + now_y);
+	}
+
 	if (gameover) {
 		console.log("Hi");
 		drawGameover();
@@ -184,18 +188,12 @@ var intervalId = setInterval(loop, 20);
 
 function collision(next_x, next_y) {
 	var ok = false;
-	if (now_y < 0) return false;
+	//if (next_y < 0) return false;
 	for (var h = 0; h < 4; h++) {
 		for (var w = 0; w < 4; w++) {
-			if (h + next_y >= 22 || w + now_x > 12) {
-				return true;
-			}
-			if (
-				(block[h + next_y][w + next_x] == 1 ||
-					block[h + next_y][w + next_x] == 9) &&
-				tetrimino[now][h][w] == 1
-			)
-				ok = true;
+			if (next_y + h < 0) continue;
+			if (tetrimino[now][h][w] == 0) continue;
+			if (block[h + next_y][w + next_x] != 0) ok = true;
 		}
 	}
 	if (ok) {
@@ -210,6 +208,7 @@ function collision(next_x, next_y) {
 
 function stick() {
 	console.log("stick");
+	console.log(now_y + " " + now_x);
 	for (var h = 0; h < 4; h++) {
 		for (var w = 0; w < 4; w++) {
 			if (block[h + now_y][w + now_x] == 0) {
@@ -229,7 +228,6 @@ function stick() {
 			}
 		}
 	}
-
 	check();
 }
 
@@ -266,8 +264,6 @@ function check() {
  */
 document.addEventListener("keydown", (event) => {
 	var keyName = event.key;
-	console.log(keyName);
-
 	if (keyName == "ArrowRight") {
 		if (!collision(now_x + 1, now_y)) now_x++;
 	} else if (keyName == "ArrowLeft") {
