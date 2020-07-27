@@ -78,7 +78,7 @@ var score = 0;
 var flickCount = 0;
 var flickLoop;
 var speed = 30;
-var pos = 100;
+var pos = 0;
 /**
  * ゲームオーバー画面
  */
