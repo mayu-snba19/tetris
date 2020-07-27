@@ -162,21 +162,16 @@ function loop() {
 
 	if (collision(now_x, now_y + 1) == true && now_y < 0 && hesi == true) {
 		gameover = true;
-		console.log(now_x + " " + now_y);
 	}
 
 	if (gameover) {
-		console.log("Hi");
 		drawGameover();
 		clearInterval(intervalId);
 	}
 	if (cnt % speed == 0 && hesi == false) {
-		//猶予時間じゃなくて
 		now_y++;
-		console.log(speed);
 	}
 
-	//衝突する かつ
 	if (collision(now_x, now_y + 1) == true && hesi == false) {
 		hesi = true;
 		cnt = 0;
@@ -210,8 +205,6 @@ function collision(next_x, next_y) {
  */
 
 function stick() {
-	console.log("stick");
-	console.log(now_y + " " + now_x);
 	for (var h = 0; h < 4; h++) {
 		for (var w = 0; w < 4; w++) {
 			if (block[h + now_y][w + now_x] == 0) {
@@ -243,10 +236,8 @@ function stick() {
 
 function check() {
 	var lineCount = 0;
-	console.log("check");
 	var erase = false;
 	for (var h = now_y + 3; h >= now_y; h--) {
-		console.log("Yes");
 		var ok = true;
 		for (var w = 1; w < 11; w++) {
 			if (block[h][w] == 0 || block[h][w] == 9) {
@@ -312,7 +303,6 @@ function drawFlick() {
 		}
 	}
 	flickCount++;
-	console.log(flickCount);
 	if (flickCount >= 13) {
 		clearInterval(flickLoop);
 		intervalId = setInterval(loop, 20);
