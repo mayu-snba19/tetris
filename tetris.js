@@ -1,6 +1,15 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+var container = document.getElementById("canvas-container");
+canvas.width = container.clientWidth;
+canvas.height = container.clientHeight;
+//canvas.width = 1000;
+//canvas.height = 670;
 ctx.strokeStyle = "#cccccc";
+console.log(canvas.width);
+console.log(canvas.height);
+
+//width = "1000" height = "670"
 
 var block = [
 	[9, 9, 9, 0, 0, 0, 0, 0, 0, 9, 9, 9],
