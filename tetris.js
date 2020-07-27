@@ -75,6 +75,7 @@ var gameover = false;
 var score = 0;
 var flickCount = 0;
 var flickLoop;
+var speed = 30;
 
 /**
  * ゲームオーバー画面
@@ -151,7 +152,7 @@ function loop() {
 	}
 
 	//猶予時間中で、秒数がたったら
-	if (hesi == true && cnt >= 60) {
+	if (hesi == true && cnt >= speed * 2) {
 		hesi = false;
 		stick();
 		now_x = 5;
@@ -169,9 +170,10 @@ function loop() {
 		drawGameover();
 		clearInterval(intervalId);
 	}
-	if (cnt % 30 == 0 && hesi == false) {
+	if (cnt % speed == 0 && hesi == false) {
 		//猶予時間じゃなくて
 		now_y++;
+		console.log(speed);
 	}
 
 	//衝突する かつ
@@ -192,7 +194,7 @@ function collision(next_x, next_y) {
 	var ok = false;
 	for (var h = 0; h < 4; h++) {
 		for (var w = 0; w < 4; w++) {
-			if (next_y + h < 0 || next_y >= 22) continue;
+			if (next_y + h < 0 || next_y + h >= 22) continue;
 			if (tetrimino[now][h][w] == 0) continue;
 			if (block[h + next_y][w + next_x] != 0) ok = true;
 		}
@@ -263,7 +265,13 @@ function check() {
 		}
 	}
 	score += lineCount * lineCount * 100;
-	if (score >= 99999) score = 99999;
+	if (score >= 9999) score = 99999;
+	else if (score >= 1500) speed = 5;
+	else if (score >= 1000) speed = 8;
+	else if (score >= 1200) speed = 10;
+	else if (score >= 500) speed = 15;
+	else if (score >= 400) speed = 20;
+	else if (score >= 300) speed = 25;
 
 	if (erase) {
 		flickCount = 0;
@@ -321,7 +329,7 @@ document.addEventListener("keydown", (event) => {
 	} else if (keyName == "ArrowLeft") {
 		if (!collision(now_x - 1, now_y)) now_x--;
 	} else if (keyName == "ArrowDown") {
-		if (!collision(now_x, now_y + 1) && hesi == false) now_y++;
+		if (!collision(now_x, now_y + 2) && hesi == false) now_y++;
 	} else if (keyName == "ArrowUp") {
 		if (hesi == false) {
 			var t = [
@@ -341,9 +349,13 @@ document.addEventListener("keydown", (event) => {
 				}
 			}
 			if (now_x >= 6) {
-				while (collision(now_x, now_y + 1)) now_x--;
+				while (collision(now_x, now_y)) {
+					now_x--;
+				}
 			} else {
-				while (collision(now_x, now_y + 1)) now_x++;
+				while (collision(now_x, now_y)) {
+					now_x++;
+				}
 			}
 		}
 	}
