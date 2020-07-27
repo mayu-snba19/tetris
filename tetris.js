@@ -1,5 +1,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+canvas.width = canvas_wrapper.offsetWidth * 0.9;
+canvas.height = canvas_wrapper.offsetHeight * 0.9;
 ctx.strokeStyle = "#cccccc";
 
 var block = [
@@ -76,7 +78,7 @@ var score = 0;
 var flickCount = 0;
 var flickLoop;
 var speed = 30;
-
+var pos = 100;
 /**
  * ゲームオーバー画面
  */
@@ -85,7 +87,7 @@ function drawGameover() {
 	ctx.font = "36px serif";
 	ctx.fillStyle = "#000000";
 	ctx.textAlign = "center";
-	ctx.fillText("SCORE : " + score, 680, 305);
+	ctx.fillText("SCORE : " + score, pos + 170, 305);
 	setTimeout(confirmButton, 1000);
 }
 
@@ -104,13 +106,13 @@ function loop() {
 	//枠線の描画
 	for (var h = 0; h < 22; h++) {
 		for (var w = 0; w < 12; w++) {
-			ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
+			ctx.strokeRect(pos + w * 30, h * 30, 30, 30);
 			if (block[h][w] == 9) {
 				ctx.fillStyle = "#000000";
-				ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+				ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 			} else if (block[h][w] == 1) {
 				ctx.fillStyle = "#aaaaaa";
-				ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+				ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 			}
 		}
 	}
@@ -137,7 +139,7 @@ function loop() {
 				if (now_y + h < 0) continue;
 
 				ctx.fillRect(
-					500 + (now_x + w) * 30 + 2,
+					pos + (now_x + w) * 30 + 2,
 					(now_y + h) * 30 + 2,
 					26,
 					26
@@ -217,13 +219,13 @@ function stick() {
 
 	for (var h = 0; h < 22; h++) {
 		for (var w = 0; w < 12; w++) {
-			ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
+			ctx.strokeRect(pos + w * 30, h * 30, 30, 30);
 			if (block[h][w] == 9) {
 				ctx.fillStyle = "#000000";
-				ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+				ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 			} else if (block[h][w] == 1) {
 				ctx.fillStyle = "#aaaaaa";
-				ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+				ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 			}
 		}
 	}
@@ -276,13 +278,13 @@ function drawFlick() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		for (var h = 0; h < 22; h++) {
 			for (var w = 0; w < 12; w++) {
-				ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
+				ctx.strokeRect(pos + w * 30, h * 30, 30, 30);
 				if (block[h][w] == 9) {
 					ctx.fillStyle = "#000000";
-					ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+					ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 				} else if (block[h][w] == 1) {
 					ctx.fillStyle = "#aaaaaa";
-					ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+					ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 				}
 			}
 		}
@@ -291,13 +293,13 @@ function drawFlick() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height); //canvasの初期化
 		for (var h = 0; h < 22; h++) {
 			for (var w = 0; w < 12; w++) {
-				ctx.strokeRect(500 + w * 30, h * 30, 30, 30);
+				ctx.strokeRect(pos + w * 30, h * 30, 30, 30);
 				if (block[h][w] == 9) {
 					ctx.fillStyle = "#aaaaaa";
-					ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+					ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 				} else if (block[h][w] == 1) {
 					ctx.fillStyle = "#aaaaaa";
-					ctx.fillRect(500 + w * 30 + 2, h * 30 + 2, 26, 26);
+					ctx.fillRect(pos + w * 30 + 2, h * 30 + 2, 26, 26);
 				}
 			}
 		}
