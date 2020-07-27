@@ -232,6 +232,7 @@ function stick() {
  */
 
 function check() {
+	var lineCount = 0;
 	console.log("check");
 	for (var h = now_y + 3; h >= now_y; h--) {
 		console.log("Yes");
@@ -242,7 +243,7 @@ function check() {
 			}
 		}
 		if (ok) {
-			score += 30;
+			lineCount++;
 			for (var v = h - 1; v > 0; v--) {
 				for (var w = 1; w < 11; w++) {
 					block[v + 1][w] = block[v][w];
@@ -251,6 +252,7 @@ function check() {
 			h++;
 		}
 	}
+	score += lineCount * lineCount * 100;
 }
 
 /**
