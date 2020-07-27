@@ -70,12 +70,25 @@ var now_y = -3;
 var cnt = 0;
 var now = Math.floor(Math.random() * 6);
 var hesi = false; //猶予
+var gameover = false;
+var score = 0;
+
+/**
+ * ゲームオーバー画面
+ */
+
+function drawGameover() {
+	ctx.font = "36px serif";
+	ctx.fillStyle = "#000000";
+	ctx.textAlign = "center";
+	ctx.fillText("SCORE : " + score, 680, 305);
+}
 
 /**
  * ループ
  */
 
-function draw() {
+function loop() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height); //canvasの初期化
 
 	//枠線の描画
@@ -137,8 +150,15 @@ function draw() {
 		now = Math.floor(Math.random() * 6);
 	}
 
-	//猶予時間じゃなくて
+	if (collision(now_x, now_y + 1) == true && now_y < 1 && hesi == true)
+		gameover = true;
+	if (gameover) {
+		console.log("Hi");
+		drawGameover();
+		clearInterval(intervalId);
+	}
 	if (cnt % 30 == 0 && hesi == false) {
+		//猶予時間じゃなくて
 		now_y++;
 	}
 
@@ -148,8 +168,9 @@ function draw() {
 		cnt = 0;
 	}
 	cnt++;
-	window.requestAnimationFrame(draw);
 }
+
+var intervalId = setInterval(loop, 20);
 
 /**
  *  衝突判定
@@ -221,6 +242,7 @@ function check() {
 			}
 		}
 		if (ok) {
+			score += 30;
 			for (var v = h - 1; v > 0; v--) {
 				for (var w = 1; w < 11; w++) {
 					block[v + 1][w] = block[v][w];
@@ -270,4 +292,3 @@ document.addEventListener("keydown", (event) => {
 		}
 	}
 });
-draw();
