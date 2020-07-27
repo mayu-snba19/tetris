@@ -82,6 +82,12 @@ function drawGameover() {
 	ctx.fillStyle = "#000000";
 	ctx.textAlign = "center";
 	ctx.fillText("SCORE : " + score, 680, 305);
+	setTimeout(confirmButton, 1000);
+}
+
+function confirmButton() {
+	var reloadbutton = window.confirm("もう一度しますか？");
+	if (reloadbutton) document.location.reload();
 }
 
 /**
