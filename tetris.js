@@ -4,6 +4,8 @@ canvas.width = canvas_wrapper.offsetWidth * 0.9;
 canvas.height = canvas_wrapper.offsetHeight * 0.9;
 ctx.strokeStyle = "#cccccc";
 
+//表示するブロック
+
 var block = [
 	[9, 9, 9, 0, 0, 0, 0, 0, 0, 9, 9, 9],
 	[9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
@@ -28,6 +30,8 @@ var block = [
 	[9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
 	[9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
 ];
+
+//テトリミノ
 
 var tetrimino = [
 	[
@@ -75,6 +79,10 @@ var tetrimino = [
 	],
 ];
 
+/**
+ * ミノをシャッフル (Fisher-Yates shuffle)
+ */
+
 function shuffle() {
 	var length = 7;
 	for (var i = length - 1; i > 0; i--) {
@@ -98,6 +106,7 @@ var speed = 30;
 var pos = 50;
 var eraseCount = 0;
 shuffle();
+
 /**
  * ゲームオーバー画面
  */
